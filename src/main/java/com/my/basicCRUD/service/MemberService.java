@@ -5,6 +5,7 @@ import com.my.basicCRUD.entity.Member;
 import com.my.basicCRUD.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,5 +31,37 @@ public class MemberService {
 //            dtoList.add(dto);
 //        }
 //        return dtoList;
+    }
+
+    public void saveMember(MemberDto dto) {
+
+        Member member = MemberDto.fromDto(dto);
+
+        memberRepository.save(member);
+    }
+
+    public void deleteById(Long id) {
+        memberRepository.deleteById(id);
+    }
+
+    public MemberDto findById(Long id) {
+        //id로 DB에서 검색하기
+        Member member = memberRepository
+                .findById(id).orElse(null);
+        //DTO로 변환하기
+        if(!ObjectUtils.isEmpty(member)){
+            return MemberDto.fromEntity(member);
+        }else {
+            return null;
+        }
+
+    }
+
+    public void updateMember(MemberDto dto) {
+        //DTO-> Entity 변환
+        Member member = MemberDto.fromDto(dto);
+        //수정처리
+        //save() : 해당 ID가 존재하면 수정 , 없으면 입력
+        memberRepository.save(member);
     }
 }
